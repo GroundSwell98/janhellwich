@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/projects";
@@ -11,7 +11,42 @@ export default function HorizontalReel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const lastBlurValues = useRef<Map<HTMLElement, number>>(new Map());
   const [currentProject, setCurrentProject] = useState(projects[0]?.slug || "");
+
+  const applyBlur = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const items = track.querySelectorAll<HTMLElement>("[data-reel-media]");
+    const vw = window.innerWidth;
+    const center = vw * 0.5;
+    const focusZone = vw * 0.12;
+    const falloff = 1 / (vw * 0.4);
+
+    items.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.right < -200 || rect.left > vw + 200) return;
+
+      const itemCenter = rect.left + rect.width * 0.5;
+      const distance = Math.abs(itemCenter - center);
+
+      let blur: number;
+      if (distance < focusZone) {
+        blur = 0;
+      } else {
+        const n = Math.min((distance - focusZone) * falloff, 1);
+        blur = n * n * 16;
+      }
+
+      const rounded = blur > 0.5 ? Math.round(blur * 2) * 0.5 : 0;
+      const prev = lastBlurValues.current.get(el) ?? -1;
+      if (rounded === prev) return;
+
+      lastBlurValues.current.set(el, rounded);
+      el.style.filter = rounded > 0 ? `blur(${rounded}px)` : "none";
+    });
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -40,6 +75,7 @@ export default function HorizontalReel() {
               if (progressRef.current) {
                 progressRef.current.style.transform = `scaleX(${self.progress})`;
               }
+              applyBlur();
             },
           },
         });
@@ -63,7 +99,7 @@ export default function HorizontalReel() {
       clearTimeout(initTimeout);
       ctx?.revert();
     };
-  }, []);
+  }, [applyBlur]);
 
   return (
     <div ref={containerRef} className="relative">
@@ -73,16 +109,15 @@ export default function HorizontalReel() {
       >
         {projects.map((project, pIdx) => (
           <div key={project.slug} className="contents">
-            {/* Intertitle */}
             <div
               data-intertitle={project.slug}
               className="shrink-0 flex items-center justify-center h-screen"
               style={{
-                width: pIdx === 0 ? "100vw" : "60vw",
+                width: pIdx === 0 ? "100vw" : "45vw",
               }}
             >
               <div className="flex flex-col items-center gap-3 px-12">
-                <span className="text-[clamp(2.5rem,5vw,5rem)] uppercase tracking-[-0.02em] leading-[1.05] text-fg text-center">
+                <span className="text-[clamp(2rem,4vw,4rem)] uppercase tracking-[-0.02em] leading-[1.05] text-fg text-center">
                   {project.title}
                 </span>
                 <span className="text-[11px] tracking-[0.15em] text-muted tabular-nums">
@@ -91,29 +126,28 @@ export default function HorizontalReel() {
               </div>
             </div>
 
-            {/* Media items */}
-            {project.media.map((item, mIdx) => {
+            {(() => {
+              const item = project.media[0];
               const aspectRatio = item.width / item.height;
-              const imgH = 0.75;
+              const imgH = 0.62;
               const imgW = imgH * 100 * aspectRatio;
 
               return (
                 <div
-                  key={`${project.slug}-${mIdx}`}
                   className="shrink-0 flex items-center"
                   style={{
                     height: "100vh",
-                    paddingLeft: mIdx === 0 ? "4vw" : "3vw",
-                    paddingRight:
-                      mIdx === project.media.length - 1 ? "4vw" : "3vw",
+                    paddingLeft: "3vw",
+                    paddingRight: "3vw",
                   }}
                 >
                   <div
+                    data-reel-media
                     className="relative overflow-hidden"
                     style={{
                       height: `${imgH * 100}vh`,
                       width: `${imgW}vh`,
-                      maxWidth: "85vw",
+                      maxWidth: "75vw",
                     }}
                   >
                     {item.type === "video" ? (
@@ -139,7 +173,7 @@ export default function HorizontalReel() {
                   </div>
                 </div>
               );
-            })}
+            })()}
           </div>
         ))}
 
@@ -155,8 +189,8 @@ export default function HorizontalReel() {
         />
       </div>
 
-      {/* Current project label */}
-      <div className="fixed bottom-5 left-6 lg:left-10 z-40">
+      {/* Current project label — bottom right to avoid overlap with DevBox */}
+      <div className="fixed bottom-5 right-6 lg:right-10 z-40">
         <span className="text-[10px] tracking-[0.15em] uppercase text-fg/40 transition-opacity duration-300">
           {currentProject &&
             projects.find((p) => p.slug === currentProject)?.title}

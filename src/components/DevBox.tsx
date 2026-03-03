@@ -1,14 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useLayout } from "@/contexts/LayoutContext";
 
-const OPTIONS = [1, 2, 3] as const;
+const OPTIONS = [1, 2] as const;
 
 export default function DevBox() {
   const { active, setActive, transitioning } = useLayout();
 
   return (
-    <div className="fixed bottom-6 left-6 lg:left-10 z-[100] flex flex-col gap-2">
+    <div className="fixed bottom-6 left-6 lg:left-10 z-[100] flex flex-col gap-3">
       <div className="flex items-center gap-1.5">
         <span className="text-[9px] tracking-[0.2em] uppercase text-fg">
           dev
@@ -31,12 +32,20 @@ export default function DevBox() {
           })}
         </div>
       </div>
-      <a
-        href="mailto:janlucahellwich@gmail.com"
-        className="text-[11px] tracking-[0.15em] uppercase text-fg hover:opacity-60 transition-opacity duration-300"
-      >
-        Contact
-      </a>
+      <div className="flex flex-col gap-1">
+        <Link
+          href="/"
+          className="text-[11px] tracking-[0.15em] uppercase text-fg hover:opacity-60 transition-opacity duration-300"
+        >
+          Work
+        </Link>
+        <Link
+          href="/info"
+          className="text-[11px] tracking-[0.15em] uppercase text-fg hover:opacity-60 transition-opacity duration-300"
+        >
+          Info
+        </Link>
+      </div>
     </div>
   );
 }

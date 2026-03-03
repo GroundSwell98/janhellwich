@@ -18,6 +18,16 @@ export default function ScrollExperience() {
   const lastScrollY = useRef(-1);
   const rafRef = useRef(0);
 
+  const handleTitleClick = useCallback((index: number) => {
+    const project = projects[index];
+    const section = document.getElementById(`project-${project.slug}`);
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      const scrollTarget = window.scrollY + rect.top - window.innerHeight * 0.15;
+      window.scrollTo({ top: scrollTarget, behavior: "smooth" });
+    }
+  }, []);
+
   const applyBlur = useCallback(() => {
     const vh = window.innerHeight;
     const center = vh * 0.5;
@@ -105,9 +115,13 @@ export default function ScrollExperience() {
     <div ref={containerRef} className="relative min-h-screen">
       <div className="flex flex-col md:flex-row">
         <div className="hidden md:block w-[40%] lg:w-[38%]">
-          <div className="sticky top-0 h-screen flex flex-col justify-end px-6 lg:px-10 py-8">
-            <div className="pt-16 flex-1">
-              <ProjectTitles projects={projects} activeIndex={activeIndex} />
+          <div className="sticky top-0 h-screen flex flex-col px-6 lg:px-10 py-8">
+            <div className="pt-[8vh]">
+              <ProjectTitles
+                projects={projects}
+                activeIndex={activeIndex}
+                onTitleClick={handleTitleClick}
+              />
             </div>
           </div>
         </div>

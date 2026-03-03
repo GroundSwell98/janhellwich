@@ -12,7 +12,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type LayoutOption = 1 | 2 | 3;
+type LayoutOption = 1 | 2;
 
 interface LayoutContextValue {
   active: LayoutOption;
