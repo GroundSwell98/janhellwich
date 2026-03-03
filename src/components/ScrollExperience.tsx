@@ -115,8 +115,8 @@ export default function ScrollExperience() {
     <div ref={containerRef} className="relative min-h-screen">
       <div className="flex flex-col md:flex-row">
         <div className="hidden md:block w-[40%] lg:w-[38%]">
-          <div className="sticky top-0 h-screen flex flex-col px-6 lg:px-10 py-8">
-            <div className="pt-[8vh]">
+          <div className="sticky top-0 h-screen flex flex-col px-6 lg:px-10">
+            <div style={{ paddingTop: "8vh" }}>
               <ProjectTitles
                 projects={projects}
                 activeIndex={activeIndex}

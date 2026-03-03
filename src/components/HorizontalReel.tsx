@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/projects";
@@ -12,7 +12,6 @@ export default function HorizontalReel() {
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const lastBlurValues = useRef<Map<HTMLElement, number>>(new Map());
-  const [currentProject, setCurrentProject] = useState(projects[0]?.slug || "");
 
   const applyBlur = useCallback(() => {
     const track = trackRef.current;
@@ -61,7 +60,7 @@ export default function HorizontalReel() {
         const totalWidth = track.scrollWidth - window.innerWidth;
         if (totalWidth <= 0) return;
 
-        const tween = gsap.to(track, {
+        gsap.to(track, {
           x: -totalWidth,
           ease: "none",
           scrollTrigger: {
@@ -79,19 +78,6 @@ export default function HorizontalReel() {
             },
           },
         });
-
-        const titleEls = track.querySelectorAll<HTMLElement>("[data-intertitle]");
-        titleEls.forEach((el) => {
-          const slug = el.dataset.intertitle!;
-          ScrollTrigger.create({
-            trigger: el,
-            containerAnimation: tween,
-            start: "left 80%",
-            end: "right 20%",
-            onEnter: () => setCurrentProject(slug),
-            onEnterBack: () => setCurrentProject(slug),
-          });
-        });
       }, container);
     }, 500);
 
@@ -107,75 +93,55 @@ export default function HorizontalReel() {
         ref={trackRef}
         className="flex items-center h-screen will-change-transform"
       >
-        {projects.map((project, pIdx) => (
-          <div key={project.slug} className="contents">
+        {projects.map((project, pIdx) => {
+          const item = project.media[0];
+          const aspectRatio = item.width / item.height;
+          const imgH = 0.62;
+          const imgW = imgH * 100 * aspectRatio;
+
+          return (
             <div
-              data-intertitle={project.slug}
-              className="shrink-0 flex items-center justify-center h-screen"
+              key={project.slug}
+              className="shrink-0 flex items-center"
               style={{
-                width: pIdx === 0 ? "100vw" : "45vw",
+                height: "100vh",
+                paddingLeft: pIdx === 0 ? "8vw" : "2vw",
+                paddingRight: pIdx === projects.length - 1 ? "8vw" : "2vw",
               }}
             >
-              <div className="flex flex-col items-center gap-3 px-12">
-                <span className="text-[clamp(2rem,4vw,4rem)] uppercase tracking-[-0.02em] leading-[1.05] text-fg text-center">
-                  {project.title}
-                </span>
-                <span className="text-[11px] tracking-[0.15em] text-muted tabular-nums">
-                  {project.year}
-                </span>
+              <div
+                data-reel-media
+                className="relative overflow-hidden"
+                style={{
+                  height: `${imgH * 100}vh`,
+                  width: `${imgW}vh`,
+                  maxWidth: "75vw",
+                }}
+              >
+                {item.type === "video" ? (
+                  <video
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="none"
+                  >
+                    <source src={item.src} />
+                  </video>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.src}
+                    alt={item.alt || ""}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
               </div>
             </div>
-
-            {(() => {
-              const item = project.media[0];
-              const aspectRatio = item.width / item.height;
-              const imgH = 0.62;
-              const imgW = imgH * 100 * aspectRatio;
-
-              return (
-                <div
-                  className="shrink-0 flex items-center"
-                  style={{
-                    height: "100vh",
-                    paddingLeft: "3vw",
-                    paddingRight: "3vw",
-                  }}
-                >
-                  <div
-                    data-reel-media
-                    className="relative overflow-hidden"
-                    style={{
-                      height: `${imgH * 100}vh`,
-                      width: `${imgW}vh`,
-                      maxWidth: "75vw",
-                    }}
-                  >
-                    {item.type === "video" ? (
-                      <video
-                        className="w-full h-full object-cover"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="none"
-                      >
-                        <source src={item.src} />
-                      </video>
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.src}
-                        alt={item.alt || ""}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        ))}
+          );
+        })}
 
         <div className="shrink-0 w-[50vw]" />
       </div>
@@ -187,14 +153,6 @@ export default function HorizontalReel() {
           className="h-full bg-fg/40 origin-left"
           style={{ transform: "scaleX(0)" }}
         />
-      </div>
-
-      {/* Current project label — bottom right to avoid overlap with DevBox */}
-      <div className="fixed bottom-5 right-6 lg:right-10 z-40">
-        <span className="text-[10px] tracking-[0.15em] uppercase text-fg/40 transition-opacity duration-300">
-          {currentProject &&
-            projects.find((p) => p.slug === currentProject)?.title}
-        </span>
       </div>
     </div>
   );

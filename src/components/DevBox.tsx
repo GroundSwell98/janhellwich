@@ -32,20 +32,12 @@ export default function DevBox() {
           })}
         </div>
       </div>
-      <div className="flex flex-col gap-1">
-        <Link
-          href="/"
-          className="text-[11px] tracking-[0.15em] uppercase text-fg hover:opacity-60 transition-opacity duration-300"
-        >
-          Work
-        </Link>
-        <Link
-          href="/info"
-          className="text-[11px] tracking-[0.15em] uppercase text-fg hover:opacity-60 transition-opacity duration-300"
-        >
-          Info
-        </Link>
-      </div>
+      <Link
+        href="/info"
+        className="text-[11px] tracking-[0.15em] uppercase text-fg hover:opacity-60 transition-opacity duration-300"
+      >
+        Info
+      </Link>
     </div>
   );
 }
