@@ -32,8 +32,8 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
             data-project-section={projectIndex}
             className="flex flex-col"
             style={{
-              paddingTop: projectIndex === 0 ? "8vh" : "12vh",
-              paddingBottom: "5vh",
+              paddingTop: projectIndex === 0 ? "8vh" : "6vh",
+              paddingBottom: "2.5vh",
             }}
           >
             <h2 className="md:hidden text-xl uppercase tracking-[-0.01em] text-fg mb-4">
@@ -43,13 +43,15 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
               </span>
             </h2>
 
-            <MediaItem
-              ref={setMediaRef(`${project.slug}-0`)}
-              item={item}
-              projectSlug={project.slug}
-              index={0}
-              priority={projectIndex === 0}
-            />
+            <div className="w-[85%]">
+              <MediaItem
+                ref={setMediaRef(`${project.slug}-0`)}
+                item={item}
+                projectSlug={project.slug}
+                index={0}
+                priority={projectIndex === 0}
+              />
+            </div>
           </div>
         );
       })}
