@@ -5,13 +5,13 @@ import { createPortal } from "react-dom";
 import "plyr/dist/plyr.css";
 
 interface VideoOverlayProps {
-  vimeoId: string;
+  videoSrc: string;
   visible: boolean;
   onClose: () => void;
 }
 
 export default function VideoOverlay({
-  vimeoId,
+  videoSrc,
   visible,
   onClose,
 }: VideoOverlayProps) {
@@ -63,25 +63,22 @@ export default function VideoOverlay({
 
       if (cancelled || !playerRef.current) return;
 
-      const wrapper = document.createElement("div");
-      wrapper.setAttribute("data-plyr-provider", "vimeo");
-      wrapper.setAttribute("data-plyr-embed-id", vimeoId);
-      playerRef.current.appendChild(wrapper);
+      const video = document.createElement("video");
+      video.playsInline = true;
+      video.crossOrigin = "anonymous";
 
-      const instance = new Plyr(wrapper, {
+      const source = document.createElement("source");
+      source.src = videoSrc;
+      source.type = "video/mp4";
+      video.appendChild(source);
+
+      playerRef.current.appendChild(video);
+
+      const instance = new Plyr(video, {
         controls: ["play", "progress", "mute", "fullscreen"],
         clickToPlay: true,
         autoplay: true,
         muted: true,
-        vimeo: {
-          byline: false,
-          portrait: false,
-          title: false,
-          speed: false,
-          transparent: false,
-          autoplay: true,
-          muted: true,
-        },
       });
 
       plyrInstanceRef.current = instance;
@@ -107,7 +104,7 @@ export default function VideoOverlay({
         plyrInstanceRef.current = null;
       }
     };
-  }, [vimeoId]);
+  }, [videoSrc]);
 
   const isShown = visible && fadeIn;
 

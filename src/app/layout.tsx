@@ -36,12 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://player.vimeo.com" />
-        <link rel="preconnect" href="https://i.vimeocdn.com" />
-        <link rel="preconnect" href="https://f.vimeocdn.com" />
-        <link rel="preconnect" href="https://vod-adaptive-ak.vimeocdn.com" />
-      </head>
+      <head />
       <body className={`${mabryPro.variable} antialiased`}>
         <LenisProvider>{children}</LenisProvider>
       </body>

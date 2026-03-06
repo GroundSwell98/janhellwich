@@ -11,8 +11,8 @@ interface MediaStreamProps {
 }
 
 export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
-  const [activeVimeoId, setActiveVimeoId] = useState<string | null>(null);
-  const [preloadVimeoId, setPreloadVimeoId] = useState<string | null>(null);
+  const [activeVideoSrc, setActiveVideoSrc] = useState<string | null>(null);
+  const [preloadVideoSrc, setPreloadVideoSrc] = useState<string | null>(null);
   const unhoverTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const setMediaRef = useCallback(
@@ -26,33 +26,33 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
     [mediaRefs]
   );
 
-  const handleHoverVideo = useCallback((vimeoId: string | null) => {
+  const handleHoverVideo = useCallback((videoSrc: string | null) => {
     if (unhoverTimerRef.current) clearTimeout(unhoverTimerRef.current);
 
-    if (vimeoId) {
-      setPreloadVimeoId(vimeoId);
+    if (videoSrc) {
+      setPreloadVideoSrc(videoSrc);
     } else {
       unhoverTimerRef.current = setTimeout(() => {
-        setPreloadVimeoId((current) => {
-          if (current && current !== activeVimeoId) return null;
+        setPreloadVideoSrc((current) => {
+          if (current && current !== activeVideoSrc) return null;
           return current;
         });
       }, 2000);
     }
-  }, [activeVimeoId]);
+  }, [activeVideoSrc]);
 
-  const handleOpenVideo = useCallback((vimeoId: string) => {
+  const handleOpenVideo = useCallback((videoSrc: string) => {
     if (unhoverTimerRef.current) clearTimeout(unhoverTimerRef.current);
-    setPreloadVimeoId(vimeoId);
-    setActiveVimeoId(vimeoId);
+    setPreloadVideoSrc(videoSrc);
+    setActiveVideoSrc(videoSrc);
   }, []);
 
   const handleCloseVideo = useCallback(() => {
-    setActiveVimeoId(null);
-    setPreloadVimeoId(null);
+    setActiveVideoSrc(null);
+    setPreloadVideoSrc(null);
   }, []);
 
-  const overlayVimeoId = activeVimeoId || preloadVimeoId;
+  const overlayVideoSrc = activeVideoSrc || preloadVideoSrc;
 
   return (
     <>
@@ -85,7 +85,7 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
                   index={0}
                   priority={projectIndex === 0}
                   previewVideo={project.previewVideo}
-                  vimeoId={project.vimeoId}
+                  videoSrc={project.videoSrc}
                   onOpenVideo={handleOpenVideo}
                   onHoverVideo={handleHoverVideo}
                 />
@@ -95,10 +95,10 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
         })}
       </div>
 
-      {overlayVimeoId && (
+      {overlayVideoSrc && (
         <VideoOverlay
-          vimeoId={overlayVimeoId}
-          visible={!!activeVimeoId}
+          videoSrc={overlayVideoSrc}
+          visible={!!activeVideoSrc}
           onClose={handleCloseVideo}
         />
       )}

@@ -20,14 +20,14 @@ interface MediaItemProps {
   index: number;
   priority?: boolean;
   previewVideo?: string;
-  vimeoId?: string;
-  onOpenVideo?: (vimeoId: string) => void;
-  onHoverVideo?: (vimeoId: string | null) => void;
+  videoSrc?: string;
+  onOpenVideo?: (videoSrc: string) => void;
+  onHoverVideo?: (videoSrc: string | null) => void;
 }
 
 const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
   function MediaItem(
-    { item, projectSlug, index, priority = false, previewVideo, vimeoId, onOpenVideo, onHoverVideo },
+    { item, projectSlug, index, priority = false, previewVideo, videoSrc, onOpenVideo, onHoverVideo },
     ref
   ) {
     const aspectRatio = item.width / item.height;
@@ -135,18 +135,18 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
     }, []);
 
     const handleClick = useCallback(() => {
-      if (vimeoId && onOpenVideo) {
+      if (videoSrc && onOpenVideo) {
         pauseVideo();
-        onOpenVideo(vimeoId);
+        onOpenVideo(videoSrc);
       }
-    }, [vimeoId, onOpenVideo, pauseVideo]);
+    }, [videoSrc, onOpenVideo, pauseVideo]);
 
     const handleMouseEnter = useCallback(() => {
       if (isTouchDevice) return;
-      if (vimeoId && onHoverVideo) onHoverVideo(vimeoId);
+      if (videoSrc && onHoverVideo) onHoverVideo(videoSrc);
       if (!previewVideo || !shouldRenderVideo) return;
       hoverTimerRef.current = setTimeout(playVideo, HOVER_DWELL_MS);
-    }, [isTouchDevice, previewVideo, shouldRenderVideo, playVideo, vimeoId, onHoverVideo]);
+    }, [isTouchDevice, previewVideo, shouldRenderVideo, playVideo, videoSrc, onHoverVideo]);
 
     const handleMouseLeave = useCallback(() => {
       if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
@@ -196,7 +196,7 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
     }, [videoActive]);
 
     const hasVideo = !!previewVideo && shouldRenderVideo;
-    const showCursor = vimeoId ? "cursor-pointer" : "";
+    const showCursor = videoSrc ? "cursor-pointer" : "";
 
     return (
       <div

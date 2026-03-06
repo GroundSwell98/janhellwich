@@ -17,7 +17,7 @@ export interface Project {
   thumbnail: MediaItem;
   media: MediaItem[];
   previewVideo?: string;
-  vimeoId?: string;
+  videoSrc?: string;
 }
 
 export const projects: Project[] = [
@@ -64,7 +64,7 @@ export const projects: Project[] = [
     year: 2025,
     client: "Dolce & Gabbana",
     previewVideo: "/media/dolce-gabbana/preview.mp4",
-    vimeoId: "1135681066",
+    videoSrc: "/media/dolce-gabbana/full.mp4",
     thumbnail: {
       src: "/media/dolce-gabbana/thumb.jpg",
       type: "image",
@@ -173,7 +173,7 @@ export const projects: Project[] = [
     description:
       "A cinematic exploration of the ancient tradition of Turkish oil wrestling. Gold at the 2025 Young Director Award in Cannes.",
     previewVideo: "/media/turkish-oil-wrestling/preview.mp4",
-    vimeoId: "941619989",
+    videoSrc: "/media/turkish-oil-wrestling/full.mp4",
     thumbnail: {
       src: "/media/turkish-oil-wrestling/thumb.jpg",
       type: "image",
@@ -211,7 +211,7 @@ export const projects: Project[] = [
     year: 2023,
     client: "Chanel x Vogue",
     previewVideo: "/media/le-sage-solange/preview.mp4",
-    vimeoId: "1019736680",
+    videoSrc: "/media/le-sage-solange/full.mp4",
     thumbnail: {
       src: "/media/le-sage-solange/01.jpg",
       type: "image",
@@ -223,7 +223,7 @@ export const projects: Project[] = [
       {
         src: "/media/le-sage-solange/01.jpg",
         type: "image",
-        alt: "Dua Lipa — The Chanel 25 Handbag",
+        alt: 'Le Sage "Solange"',
         width: 1920,
         height: 1080,
       },
@@ -240,6 +240,31 @@ export const projects: Project[] = [
         alt: 'Le Sage "Solange" — still 3',
         width: 1920,
         height: 1280,
+      },
+    ],
+  },
+  {
+    slug: "dua-vogue",
+    title: "DUA VOGUE",
+    year: 2025,
+    client: "To be added",
+    description: "To be added",
+    previewVideo: "/media/dua-vogue/preview.mp4",
+    videoSrc: "/media/dua-vogue/full.mp4",
+    thumbnail: {
+      src: "/media/dua-vogue/thumb.jpg",
+      type: "image",
+      alt: "Dua Vogue",
+      width: 1920,
+      height: 1080,
+    },
+    media: [
+      {
+        src: "/media/dua-vogue/thumb.jpg",
+        type: "image",
+        alt: "Dua Vogue",
+        width: 1920,
+        height: 1080,
       },
     ],
   },
