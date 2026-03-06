@@ -17,11 +17,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Jan Hellwich — Director",
+  title: "Jan Hellwich Work",
   description:
     "Jan Hellwich is a director exploring culturally significant themes through strong visual narratives.",
   openGraph: {
-    title: "Jan Hellwich — Director",
+    title: "Jan Hellwich Work",
     description:
       "Director exploring culturally significant themes through strong visual narratives. Cannes YDA Gold winner.",
     type: "website",
