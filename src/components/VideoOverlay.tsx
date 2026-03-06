@@ -6,13 +6,11 @@ import "plyr/dist/plyr.css";
 
 interface VideoOverlayProps {
   videoSrc: string;
-  visible: boolean;
   onClose: () => void;
 }
 
 export default function VideoOverlay({
   videoSrc,
-  visible,
   onClose,
 }: VideoOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,27 +31,20 @@ export default function VideoOverlay({
   }, [onClose]);
 
   useEffect(() => {
-    if (visible) {
-      document.body.style.overflow = "hidden";
-      const player = plyrInstanceRef.current as { muted: boolean } | null;
-      if (player) player.muted = false;
-      requestAnimationFrame(() => setFadeIn(true));
-    } else {
-      setFadeIn(false);
-    }
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => setFadeIn(true));
     return () => {
-      if (visible) document.body.style.overflow = "";
+      document.body.style.overflow = "";
     };
-  }, [visible]);
+  }, []);
 
   useEffect(() => {
-    if (!visible) return;
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleClose();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [visible, handleClose]);
+  }, [handleClose]);
 
   useEffect(() => {
     let cancelled = false;
@@ -90,7 +81,10 @@ export default function VideoOverlay({
       });
 
       instance.on("playing", () => {
-        if (!cancelled) setPlayerReady(true);
+        if (!cancelled) {
+          instance.muted = false;
+          setPlayerReady(true);
+        }
       });
     }
 
@@ -105,15 +99,13 @@ export default function VideoOverlay({
     };
   }, [videoSrc]);
 
-  const isShown = visible && fadeIn;
-
   return createPortal(
     <div
       ref={containerRef}
       className="video-overlay"
       style={{
-        opacity: isShown ? 1 : 0,
-        pointerEvents: isShown ? "auto" : "none",
+        opacity: fadeIn ? 1 : 0,
+        pointerEvents: fadeIn ? "auto" : "none",
       }}
       onClick={(e) => {
         if (e.target === containerRef.current) handleClose();
@@ -121,7 +113,7 @@ export default function VideoOverlay({
     >
       <button
         className="video-overlay__close"
-        style={{ opacity: isShown && playerReady ? 1 : 0 }}
+        style={{ opacity: fadeIn && playerReady ? 1 : 0 }}
         onClick={handleClose}
         aria-label="Close video"
       >
@@ -131,7 +123,7 @@ export default function VideoOverlay({
         </svg>
       </button>
 
-      {isShown && !playerReady && (
+      {fadeIn && !playerReady && (
         <div className="video-overlay__loader">
           <div className="video-overlay__spinner" />
         </div>
@@ -139,7 +131,7 @@ export default function VideoOverlay({
 
       <div
         className="video-overlay__player"
-        style={{ opacity: isShown && playerReady ? 1 : 0 }}
+        style={{ opacity: fadeIn && playerReady ? 1 : 0 }}
       >
         <div ref={playerRef} />
       </div>

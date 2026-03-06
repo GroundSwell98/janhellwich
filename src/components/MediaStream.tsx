@@ -33,17 +33,13 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
       setPreloadVideoSrc(videoSrc);
     } else {
       unhoverTimerRef.current = setTimeout(() => {
-        setPreloadVideoSrc((current) => {
-          if (current && current !== activeVideoSrc) return null;
-          return current;
-        });
+        setPreloadVideoSrc(null);
       }, 2000);
     }
-  }, [activeVideoSrc]);
+  }, []);
 
   const handleOpenVideo = useCallback((videoSrc: string) => {
     if (unhoverTimerRef.current) clearTimeout(unhoverTimerRef.current);
-    setPreloadVideoSrc(videoSrc);
     setActiveVideoSrc(videoSrc);
   }, []);
 
@@ -51,8 +47,6 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
     setActiveVideoSrc(null);
     setPreloadVideoSrc(null);
   }, []);
-
-  const overlayVideoSrc = activeVideoSrc || preloadVideoSrc;
 
   return (
     <>
@@ -95,10 +89,32 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
         })}
       </div>
 
-      {overlayVideoSrc && (
+      {preloadVideoSrc && !activeVideoSrc && (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <video
+          key={preloadVideoSrc}
+          preload="auto"
+          muted
+          aria-hidden="true"
+          tabIndex={-1}
+          style={{
+            position: "fixed",
+            top: -1,
+            left: -1,
+            width: 1,
+            height: 1,
+            opacity: 0,
+            pointerEvents: "none",
+            zIndex: -1,
+          }}
+        >
+          <source src={preloadVideoSrc} type="video/mp4" />
+        </video>
+      )}
+
+      {activeVideoSrc && (
         <VideoOverlay
-          videoSrc={overlayVideoSrc}
-          visible={!!activeVideoSrc}
+          videoSrc={activeVideoSrc}
           onClose={handleCloseVideo}
         />
       )}
