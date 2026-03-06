@@ -9,13 +9,10 @@ import {
   useEffect,
 } from "react";
 import type { MediaItem as MediaItemType } from "@/data/projects";
-import PreviewControls from "./PreviewControls";
 
 const SKELETON_BG = "#DDDDDB";
 const HOVER_DWELL_MS = 150;
 const TOUCH_HOLD_MS = 200;
-const CONTROLS_DELAY_MS = 600;
-const CONTROLS_AUTOHIDE_MS = 2000;
 
 interface MediaItemProps {
   item: MediaItemType;
@@ -40,13 +37,10 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const [videoActive, setVideoActive] = useState(false);
-    const [controlsVisible, setControlsVisible] = useState(false);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
 
     const hoverTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
-    const controlsTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
-    const autohideTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
     const touchHoldTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
     const touchStartedRef = useRef(false);
     const touchMovedRef = useRef(false);
@@ -102,9 +96,6 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
       const startCrossfade = () => {
         requestAnimationFrame(() => {
           setVideoActive(true);
-          controlsTimerRef.current = setTimeout(() => {
-            if (!isTouchDevice) setControlsVisible(true);
-          }, CONTROLS_DELAY_MS);
         });
       };
 
@@ -129,7 +120,7 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
           playingListenerRef.current = null;
         });
       }
-    }, [isTouchDevice]);
+    }, []);
 
     const pauseVideo = useCallback(() => {
       const video = videoRef.current;
@@ -141,19 +132,7 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
         if (!video.paused) video.pause();
       }
       setVideoActive(false);
-      setControlsVisible(false);
-      if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
-      if (autohideTimerRef.current) clearTimeout(autohideTimerRef.current);
     }, []);
-
-    const resetAutohide = useCallback(() => {
-      if (!videoActive) return;
-      setControlsVisible(true);
-      if (autohideTimerRef.current) clearTimeout(autohideTimerRef.current);
-      autohideTimerRef.current = setTimeout(() => {
-        setControlsVisible(false);
-      }, CONTROLS_AUTOHIDE_MS);
-    }, [videoActive]);
 
     const handleClick = useCallback(() => {
       if (vimeoId && onOpenVideo) {
@@ -174,10 +153,6 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
       if (onHoverVideo) onHoverVideo(null);
       pauseVideo();
     }, [pauseVideo, onHoverVideo]);
-
-    const handleMouseMove = useCallback(() => {
-      if (videoActive && !isTouchDevice) resetAutohide();
-    }, [videoActive, isTouchDevice, resetAutohide]);
 
     const handleTouchStart = useCallback(() => {
       if (!isTouchDevice) return;
@@ -238,7 +213,6 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
         style={{ aspectRatio }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onMouseMove={handleMouseMove}
         onClick={!isTouchDevice ? handleClick : undefined}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -304,15 +278,6 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
               }}
             />
 
-            {/* Layer 4: preview controls (desktop only) */}
-            {hasVideo && !isTouchDevice && (
-              <div className="absolute inset-0" style={{ zIndex: 20 }}>
-                <PreviewControls
-                  videoRef={videoRef}
-                  visible={controlsVisible}
-                />
-              </div>
-            )}
           </div>
         )}
       </div>
