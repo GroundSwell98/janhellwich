@@ -18,6 +18,48 @@ export default function ScrollExperience() {
   const lastScrollY = useRef(-1);
   const rafRef = useRef(0);
 
+  const titlesWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function alignTitles() {
+      const wrap = titlesWrapRef.current;
+      if (!wrap) return;
+      const span = wrap.querySelector("button span") as HTMLElement;
+      const thumb = document.querySelector("[data-media-item]") as HTMLElement;
+      if (!span || !thumb) return;
+
+      wrap.style.transform = "";
+
+      const cs = getComputedStyle(span);
+      const fontSize = parseFloat(cs.fontSize);
+      const lineHeight = parseFloat(cs.lineHeight) || fontSize * 1.1;
+      const halfLeading = (lineHeight - fontSize) / 2;
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      let ascenderAboveCap = fontSize * 0.4;
+      if (ctx) {
+        ctx.font = `${cs.fontWeight} ${fontSize}px ${cs.fontFamily}`;
+        const m = ctx.measureText("ABCDEFGHIJKLM");
+        if (m.fontBoundingBoxAscent !== undefined && m.actualBoundingBoxAscent !== undefined) {
+          ascenderAboveCap = m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
+        }
+      }
+
+      const renderingCorrection = fontSize * -0.10;
+      const invisibleAboveCap = halfLeading + ascenderAboveCap + renderingCorrection;
+      const spanTop = span.getBoundingClientRect().top;
+      const thumbTop = thumb.getBoundingClientRect().top;
+      const shift = thumbTop - (spanTop + invisibleAboveCap);
+
+      wrap.style.transform = `translateY(${shift}px)`;
+    }
+
+    document.fonts.ready.then(alignTitles);
+    window.addEventListener("resize", () => document.fonts.ready.then(alignTitles));
+    return () => window.removeEventListener("resize", alignTitles);
+  }, []);
+
   const handleTitleClick = useCallback((index: number) => {
     const project = projects[index];
     const section = document.getElementById(`project-${project.slug}`);
@@ -123,7 +165,7 @@ export default function ScrollExperience() {
       <div className="flex flex-col md:flex-row">
         <div className="hidden md:block w-[40%] lg:w-[38%]">
           <div className="sticky top-0 h-screen flex flex-col px-6 lg:px-10">
-            <div style={{ paddingTop: "calc(4vh - 0.55 * clamp(1rem, 1.8vw, 1.5rem))" }}>
+            <div ref={titlesWrapRef} style={{ paddingTop: "4vh" }}>
               <ProjectTitles
                 projects={projects}
                 activeIndex={activeIndex}
