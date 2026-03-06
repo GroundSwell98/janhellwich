@@ -1,6 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const ALLOWED_HOSTS = ["janhellwich.com", "www.janhellwich.com", "localhost"];
+const ALLOWED_HOSTS = [
+  "janhellwich.com",
+  "www.janhellwich.com",
+  "localhost",
+  "vercel.app",
+];
 
 export default function proxy(request: NextRequest) {
   const referer = request.headers.get("referer");
