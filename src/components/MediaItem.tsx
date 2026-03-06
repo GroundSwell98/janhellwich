@@ -50,6 +50,7 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
     const touchHoldTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
     const touchStartedRef = useRef(false);
     const touchMovedRef = useRef(false);
+    const playingListenerRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
       setIsTouchDevice("ontouchstart" in window);
@@ -99,28 +100,46 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
       if (!video) return;
 
       const startCrossfade = () => {
-        setVideoActive(true);
-        controlsTimerRef.current = setTimeout(() => {
-          if (!isTouchDevice) setControlsVisible(true);
-        }, CONTROLS_DELAY_MS);
+        requestAnimationFrame(() => {
+          setVideoActive(true);
+          controlsTimerRef.current = setTimeout(() => {
+            if (!isTouchDevice) setControlsVisible(true);
+          }, CONTROLS_DELAY_MS);
+        });
       };
 
-      video.play().catch(() => {});
+      if (playingListenerRef.current) {
+        video.removeEventListener("playing", playingListenerRef.current);
+        playingListenerRef.current = null;
+      }
 
-      if (video.readyState >= 2) {
+      const onPlaying = () => {
+        video.removeEventListener("playing", onPlaying);
+        playingListenerRef.current = null;
+        startCrossfade();
+      };
+
+      if (!video.paused && video.readyState >= 3) {
         startCrossfade();
       } else {
-        const onReady = () => {
-          video.removeEventListener("loadeddata", onReady);
-          startCrossfade();
-        };
-        video.addEventListener("loadeddata", onReady);
+        playingListenerRef.current = onPlaying;
+        video.addEventListener("playing", onPlaying);
+        video.play().catch(() => {
+          video.removeEventListener("playing", onPlaying);
+          playingListenerRef.current = null;
+        });
       }
     }, [isTouchDevice]);
 
     const pauseVideo = useCallback(() => {
       const video = videoRef.current;
-      if (video && !video.paused) video.pause();
+      if (video) {
+        if (playingListenerRef.current) {
+          video.removeEventListener("playing", playingListenerRef.current);
+          playingListenerRef.current = null;
+        }
+        if (!video.paused) video.pause();
+      }
       setVideoActive(false);
       setControlsVisible(false);
       if (controlsTimerRef.current) clearTimeout(controlsTimerRef.current);
@@ -251,7 +270,11 @@ const MediaItem = forwardRef<HTMLDivElement, MediaItemProps>(
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"
-                style={{ zIndex: 5, opacity: videoActive ? 1 : 0 }}
+                style={{
+                  zIndex: 5,
+                  opacity: videoActive ? 1 : 0,
+                  transition: "opacity 300ms ease",
+                }}
                 muted
                 loop
                 playsInline
