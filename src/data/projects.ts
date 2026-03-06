@@ -20,13 +20,15 @@ export interface Project {
   videoSrc?: string;
 }
 
+const R2_BASE = "https://pub-73ab30b45b4b472da6f909e74663f381.r2.dev";
+
 export const projects: Project[] = [
   {
     slug: "international-klein-blue",
     title: "INTERNATIONAL KLEIN BLUE",
     year: 2026,
     description: "A visual exploration of Yves Klein's iconic blue.",
-    previewVideo: "/media/international-klein-blue/preview.mp4",
+    previewVideo: `${R2_BASE}/international-klein-blue/preview.mp4`,
     thumbnail: {
       src: "/media/international-klein-blue/01.png",
       type: "image",
@@ -63,8 +65,8 @@ export const projects: Project[] = [
     title: "DOLCE & GABBANA",
     year: 2025,
     client: "Dolce & Gabbana",
-    previewVideo: "/media/dolce-gabbana/preview.mp4",
-    videoSrc: "/media/dolce-gabbana/full.mp4",
+    previewVideo: `${R2_BASE}/dolce-gabbana/preview.mp4`,
+    videoSrc: `${R2_BASE}/dolce-gabbana/full.mp4`,
     thumbnail: {
       src: "/media/dolce-gabbana/thumb.jpg",
       type: "image",
@@ -172,8 +174,8 @@ export const projects: Project[] = [
     year: 2024,
     description:
       "A cinematic exploration of the ancient tradition of Turkish oil wrestling. Gold at the 2025 Young Director Award in Cannes.",
-    previewVideo: "/media/turkish-oil-wrestling/preview.mp4",
-    videoSrc: "/media/turkish-oil-wrestling/full.mp4",
+    previewVideo: `${R2_BASE}/turkish-oil-wrestling/preview.mp4`,
+    videoSrc: `${R2_BASE}/turkish-oil-wrestling/full.mp4`,
     thumbnail: {
       src: "/media/turkish-oil-wrestling/thumb.jpg",
       type: "image",
@@ -210,8 +212,8 @@ export const projects: Project[] = [
     title: 'LE SAGE "SOLANGE"',
     year: 2023,
     client: "Chanel x Vogue",
-    previewVideo: "/media/le-sage-solange/preview.mp4",
-    videoSrc: "/media/le-sage-solange/full.mp4",
+    previewVideo: `${R2_BASE}/le-sage-solange/preview.mp4`,
+    videoSrc: `${R2_BASE}/le-sage-solange/full.mp4`,
     thumbnail: {
       src: "/media/le-sage-solange/01.jpg",
       type: "image",
@@ -249,8 +251,8 @@ export const projects: Project[] = [
     year: 2025,
     client: "To be added",
     description: "To be added",
-    previewVideo: "/media/dua-vogue/preview.mp4",
-    videoSrc: "/media/dua-vogue/full.mp4",
+    previewVideo: `${R2_BASE}/dua-vogue/preview.mp4`,
+    videoSrc: `${R2_BASE}/dua-vogue/full.mp4`,
     thumbnail: {
       src: "/media/dua-vogue/thumb.jpg",
       type: "image",

@@ -1,22 +1,36 @@
 ---
-description: Deployment workflow – videos are self-hosted and deployed via GitHub/Vercel
+description: Deployment workflow – videos hosted on Cloudflare R2, code on Vercel
 alwaysApply: true
 ---
 
 # Deployment Workflow
 
-Videos are self-hosted as MP4 files in `public/media/` and deployed via standard git push. Vercel auto-deploys from GitHub.
+Videos are hosted on **Cloudflare R2** (bucket: `janhellwich-media`). Code and images deploy to Vercel via git push.
+
+## What lives where
+
+- **Vercel (via git)**: Code, images (jpg/png in `public/media/`)
+- **Cloudflare R2**: All video files (preview.mp4 + full.mp4)
+- **Local only**: Source videos in `videos-to-be-edited/`
+
+## R2 base URL
+
+```
+https://pub-73ab30b45b4b472da6f909e74663f381.r2.dev
+```
+
+Referenced in `src/data/projects.ts` as the `R2_BASE` constant.
 
 ## Adding a new project with videos
 
-1. Encode the video with FFmpeg: `ffmpeg -i input -c:v libx264 -crf 18 -preset slow -c:a aac -b:a 192k -movflags +faststart output.mp4`
-2. **Keep each file under 100 MB** (GitHub limit) — increase CRF to 20-23 if needed
-3. Place files in `public/media/<project-slug>/` (`full.mp4`, `preview.mp4`, `thumb.jpg`)
-4. Add the project entry in `src/data/projects.ts`
-5. Commit and push — Vercel auto-deploys
+1. Encode with FFmpeg: `ffmpeg -i input -c:v libx264 -crf 18 -preset slow -c:a aac -b:a 192k -movflags +faststart output.mp4`
+2. Upload to R2: `npx wrangler r2 object put janhellwich-media/<slug>/full.mp4 --file path/to/full.mp4`
+3. Upload preview: `npx wrangler r2 object put janhellwich-media/<slug>/preview.mp4 --file path/to/preview.mp4`
+4. Place images in `public/media/<slug>/` (thumb.jpg, stills)
+5. Add project entry in `src/data/projects.ts` using `R2_BASE` for video URLs
+6. Commit and push — Vercel auto-deploys
 
-## Key details
+## Updating existing videos
 
-- Source videos live in `videos-to-be-edited/` (outside the Next.js project)
-- `src/proxy.ts` provides hotlink protection for `.mp4` requests
-- All video files must stay under 100 MB each (GitHub's per-file limit)
+1. Re-encode and upload to R2 (same key overwrites the old file)
+2. No code changes needed if the filename stays the same
