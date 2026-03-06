@@ -131,6 +131,12 @@ export default function VideoOverlay({
         </svg>
       </button>
 
+      {isShown && !playerReady && (
+        <div className="video-overlay__loader">
+          <div className="video-overlay__spinner" />
+        </div>
+      )}
+
       <div
         className="video-overlay__player"
         style={{ opacity: isShown && playerReady ? 1 : 0 }}
