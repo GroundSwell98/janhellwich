@@ -52,8 +52,12 @@ export default function ScrollExperience() {
     }
 
     document.fonts.ready.then(alignTitles);
-    window.addEventListener("resize", () => document.fonts.ready.then(alignTitles));
-    return () => window.removeEventListener("resize", alignTitles);
+    const resizeHandler = () => document.fonts.ready.then(alignTitles);
+    window.addEventListener("resize", resizeHandler);
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
   }, []);
 
   const handleTitleClick = useCallback((index: number) => {
