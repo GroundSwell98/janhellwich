@@ -65,7 +65,6 @@ export default function VideoOverlay({
 
       const video = document.createElement("video");
       video.playsInline = true;
-      video.crossOrigin = "anonymous";
 
       const source = document.createElement("source");
       source.src = videoSrc;
