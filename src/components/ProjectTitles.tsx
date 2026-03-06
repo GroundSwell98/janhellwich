@@ -22,7 +22,7 @@ export default function ProjectTitles({
             key={project.slug}
             onClick={() => onTitleClick?.(i)}
             className="flex items-baseline gap-2 text-left bg-transparent border-none p-0 cursor-pointer"
-            style={{ lineHeight: "1.3" }}
+            style={{ lineHeight: "1.1" }}
           >
             <span
               className="text-[clamp(1rem,1.8vw,1.5rem)] uppercase tracking-[-0.01em] transition-all duration-500 ease-out"

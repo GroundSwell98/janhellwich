@@ -123,7 +123,7 @@ export default function ScrollExperience() {
       <div className="flex flex-col md:flex-row">
         <div className="hidden md:block w-[40%] lg:w-[38%]">
           <div className="sticky top-0 h-screen flex flex-col px-6 lg:px-10">
-            <div style={{ paddingTop: "calc(4vh - 0.15 * clamp(1rem, 1.8vw, 1.5rem))" }}>
+            <div style={{ paddingTop: "calc(4vh - 0.55 * clamp(1rem, 1.8vw, 1.5rem))" }}>
               <ProjectTitles
                 projects={projects}
                 activeIndex={activeIndex}
