@@ -35,6 +35,8 @@ export default function VideoOverlay({
   useEffect(() => {
     if (visible) {
       document.body.style.overflow = "hidden";
+      const player = plyrInstanceRef.current as { muted: boolean } | null;
+      if (player) player.muted = false;
       requestAnimationFrame(() => setFadeIn(true));
     } else {
       setFadeIn(false);
@@ -77,7 +79,7 @@ export default function VideoOverlay({
           speed: false,
           transparent: false,
           autoplay: true,
-          muted: false,
+          muted: true,
         },
       });
 

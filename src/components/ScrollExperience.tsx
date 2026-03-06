@@ -45,7 +45,7 @@ export default function ScrollExperience() {
       const renderingCorrection = fontSize * -0.10;
       const invisibleAboveCap = halfLeading + ascenderAboveCap + renderingCorrection;
       const spanTop = span.getBoundingClientRect().top;
-      const thumbTop = thumb.getBoundingClientRect().top;
+      const thumbTop = thumb.getBoundingClientRect().top + window.scrollY;
       const shift = thumbTop - (spanTop + invisibleAboveCap);
 
       wrap.style.transform = `translateY(${shift}px)`;
