@@ -32,8 +32,8 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
             data-project-section={projectIndex}
             className="flex flex-col"
             style={{
-              paddingTop: projectIndex === 0 ? "8vh" : "6vh",
-              paddingBottom: "2.5vh",
+              paddingTop: projectIndex === 0 ? "4vh" : "4.2vh",
+              paddingBottom: "1.75vh",
             }}
           >
             <h2 className="md:hidden text-xl uppercase tracking-[-0.01em] text-fg mb-4">
