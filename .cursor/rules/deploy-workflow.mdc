@@ -1,41 +1,22 @@
 ---
-description: Deployment workflow – video files are excluded from Git and deployed via Vercel CLI
+description: Deployment workflow – videos are self-hosted and deployed via GitHub/Vercel
 alwaysApply: true
 ---
 
 # Deployment Workflow
 
-Video files (`public/media/**/*.mp4`) are **gitignored** because they exceed GitHub's 100 MB file limit. They live only on disk and are deployed directly via the Vercel CLI.
+Videos are self-hosted as MP4 files in `public/media/` and deployed via standard git push. Vercel auto-deploys from GitHub.
 
-## When you change code only (no video changes)
+## Adding a new project with videos
 
-```bash
-git add . && git commit -m "description" && git push
-```
-
-Vercel auto-deploys from the push. Videos are already on Vercel from the last CLI deploy.
-
-## When you add or change video files
-
-After committing and pushing code changes, also run:
-
-```bash
-cd janhellwich && vercel --prod
-```
-
-This uploads the full project (including videos) directly to Vercel, bypassing GitHub.
-
-## When you add a new project with videos
-
-1. Encode the video with FFmpeg (CRF 18, `preset slow`, `movflags +faststart`)
-2. Place files in `public/media/<project-slug>/` (`full.mp4`, `preview.mp4`, `thumb.jpg`)
-3. Add the project entry in `src/data/projects.ts`
-4. Commit and push code to Git
-5. Run `vercel --prod` from the `janhellwich/` directory to deploy videos
+1. Encode the video with FFmpeg: `ffmpeg -i input -c:v libx264 -crf 18 -preset slow -c:a aac -b:a 192k -movflags +faststart output.mp4`
+2. **Keep each file under 100 MB** (GitHub limit) — increase CRF to 20-23 if needed
+3. Place files in `public/media/<project-slug>/` (`full.mp4`, `preview.mp4`, `thumb.jpg`)
+4. Add the project entry in `src/data/projects.ts`
+5. Commit and push — Vercel auto-deploys
 
 ## Key details
 
-- All `.mp4` files under `public/media/` are in `.gitignore`
-- Images (`.jpg`) in `public/media/` ARE tracked by Git
-- The Vercel CLI must be run from the `janhellwich/` directory
 - Source videos live in `videos-to-be-edited/` (outside the Next.js project)
+- `src/proxy.ts` provides hotlink protection for `.mp4` requests
+- All video files must stay under 100 MB each (GitHub's per-file limit)
