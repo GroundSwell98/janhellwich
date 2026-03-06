@@ -92,6 +92,14 @@ export default function ScrollExperience() {
 
     mediaRefs.current.forEach((el) => observer.observe(el));
 
+    mediaRefs.current.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom > -100 && rect.top < window.innerHeight + 100) {
+        visibleItems.current.add(el);
+      }
+    });
+    applyBlur();
+
     function onScroll() {
       const y = window.scrollY;
       if (y === lastScrollY.current) return;
@@ -101,7 +109,6 @@ export default function ScrollExperience() {
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    applyBlur();
 
     return () => {
       triggers.forEach((t) => t.kill());
