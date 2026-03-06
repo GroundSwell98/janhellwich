@@ -44,6 +44,146 @@ html.lenis, html.lenis body {
   transform: translateZ(0);
 }
 
+/* ── Preview Controls ── */
+
+.preview-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 16px 14px;
+  transition: opacity 0.3s ease;
+  z-index: 20;
+}
+
+.preview-controls__track {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.preview-controls__track::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.preview-controls__fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 1px;
+  background: #ffffff;
+  width: 0%;
+  pointer-events: none;
+}
+
+/* ── Video Overlay ── */
+
+.video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.video-overlay__close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  color: rgba(255, 255, 255, 0.7);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: color 0.2s ease, opacity 0.4s ease;
+}
+
+.video-overlay__close:hover {
+  color: #ffffff;
+}
+
+.video-overlay__player {
+  width: 90vw;
+  max-width: 1200px;
+  transition: opacity 0.5s ease;
+}
+
+.video-overlay__player .plyr {
+  width: 100%;
+}
+
+/* ── Plyr Overrides (GVS-style) ── */
+
+.video-overlay .plyr {
+  --plyr-color-main: #ffffff;
+  --plyr-video-control-color: #ffffff;
+  --plyr-video-control-background-hover: transparent;
+  --plyr-range-track-height: 1px;
+  --plyr-range-thumb-height: 12px;
+  --plyr-range-thumb-background: #ffffff;
+  --plyr-range-fill-background: #ffffff;
+}
+
+.video-overlay .plyr__control.plyr__tab-focus {
+  box-shadow: none !important;
+}
+
+.video-overlay .plyr--video .plyr__control:hover,
+.video-overlay .plyr--video .plyr__control[aria-expanded="true"] {
+  background: transparent;
+}
+
+.video-overlay .plyr--full-ui input[type="range"]::-webkit-slider-thumb {
+  box-shadow: none;
+  border-radius: 0;
+  width: 2px;
+  height: 12px;
+}
+
+.video-overlay .plyr--full-ui input[type="range"]::-webkit-slider-runnable-track {
+  border-radius: 0;
+  box-shadow: none;
+  height: 1px;
+}
+
+.video-overlay .plyr__progress__buffer {
+  border-radius: 0;
+  height: 1px;
+}
+
+.video-overlay .plyr--full-ui input[type="range"] {
+  color: #ffffff;
+}
+
+.video-overlay .plyr--full-ui input[type="range"].plyr__tab-focus::-webkit-slider-runnable-track {
+  box-shadow: none;
+}
+
+.video-overlay .plyr__poster {
+  background-color: transparent;
+}
+
+.video-overlay .plyr__volume {
+  min-width: auto;
+  max-width: 35px;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -70,11 +210,3 @@ html.lenis, html.lenis body {
   animation: layoutFadeIn 0.4s ease-out forwards;
 }
 
-@keyframes skeletonShimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.animate-skeleton-shimmer {
-  animation: skeletonShimmer 1.8s ease-in-out infinite;
-}

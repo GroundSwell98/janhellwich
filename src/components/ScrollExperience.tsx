@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/projects";
 import ProjectTitles from "./ProjectTitles";
 import MediaStream from "./MediaStream";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollExperience() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -77,6 +73,15 @@ export default function ScrollExperience() {
     const falloff = 1 / (vh * 0.4);
 
     visibleItems.current.forEach((el) => {
+      if (el.hasAttribute("data-video-active")) {
+        const prev = lastBlurValues.current.get(el) ?? -1;
+        if (prev !== 0) {
+          lastBlurValues.current.set(el, 0);
+          el.style.filter = "none";
+        }
+        return;
+      }
+
       const rect = el.getBoundingClientRect();
       const itemCenter = rect.top + rect.height * 0.5;
       const distance = Math.abs(itemCenter - center);
@@ -98,24 +103,20 @@ export default function ScrollExperience() {
     });
   }, []);
 
+  const updateActiveIndex = useCallback(() => {
+    const triggerLine = window.innerHeight * 0.4;
+    let active = 0;
+    for (let i = 0; i < projects.length; i++) {
+      const section = document.getElementById(`project-${projects[i].slug}`);
+      if (!section) continue;
+      if (section.getBoundingClientRect().top <= triggerLine) {
+        active = i;
+      }
+    }
+    setActiveIndex(active);
+  }, []);
+
   useEffect(() => {
-    const triggers: ScrollTrigger[] = [];
-
-    projects.forEach((project, index) => {
-      const section = document.getElementById(`project-${project.slug}`);
-      if (!section) return;
-
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top 60%",
-          end: "bottom 40%",
-          onEnter: () => setActiveIndex(index),
-          onEnterBack: () => setActiveIndex(index),
-        })
-      );
-    });
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -141,24 +142,27 @@ export default function ScrollExperience() {
       }
     });
     applyBlur();
+    updateActiveIndex();
 
     function onScroll() {
       const y = window.scrollY;
       if (y === lastScrollY.current) return;
       lastScrollY.current = y;
       cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(applyBlur);
+      rafRef.current = requestAnimationFrame(() => {
+        applyBlur();
+        updateActiveIndex();
+      });
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      triggers.forEach((t) => t.kill());
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [applyBlur]);
+  }, [applyBlur, updateActiveIndex]);
 
   return (
     <div ref={containerRef} className="relative min-h-screen">
