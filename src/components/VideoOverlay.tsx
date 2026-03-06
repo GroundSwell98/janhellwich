@@ -72,6 +72,7 @@ export default function VideoOverlay({
         controls: ["play", "progress", "mute", "fullscreen"],
         clickToPlay: true,
         autoplay: true,
+        muted: true,
         vimeo: {
           byline: false,
           portrait: false,
@@ -86,7 +87,10 @@ export default function VideoOverlay({
       plyrInstanceRef.current = instance;
 
       instance.on("ready", () => {
-        if (!cancelled) instance.play();
+        if (!cancelled) {
+          instance.muted = true;
+          instance.play();
+        }
       });
 
       instance.on("playing", () => {
