@@ -41,11 +41,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://i.vimeocdn.com" />
         <link rel="preconnect" href="https://f.vimeocdn.com" />
         <link rel="preconnect" href="https://vod-adaptive-ak.vimeocdn.com" />
-        <link
-          rel="preload"
-          href="https://cdn.plyr.io/3.7.8/plyr.css"
-          as="style"
-        />
       </head>
       <body className={`${mabryPro.variable} antialiased`}>
         <LenisProvider>{children}</LenisProvider>

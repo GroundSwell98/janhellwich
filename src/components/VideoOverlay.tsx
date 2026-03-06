@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
+import "plyr/dist/plyr.css";
 
 interface VideoOverlayProps {
   vimeoId: string;
@@ -56,10 +57,7 @@ export default function VideoOverlay({
     let cancelled = false;
 
     async function initPlayer() {
-      const [{ default: Plyr }] = await Promise.all([
-        import("plyr"),
-        loadCSS("https://cdn.plyr.io/3.7.8/plyr.css"),
-      ]);
+      const { default: Plyr } = await import("plyr");
 
       if (cancelled || !playerRef.current) return;
 
@@ -146,19 +144,4 @@ export default function VideoOverlay({
     </div>,
     document.body
   );
-}
-
-function loadCSS(href: string): Promise<void> {
-  return new Promise((resolve) => {
-    if (document.querySelector(`link[href="${href}"]`)) {
-      resolve();
-      return;
-    }
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = href;
-    link.onload = () => resolve();
-    link.onerror = () => resolve();
-    document.head.appendChild(link);
-  });
 }
