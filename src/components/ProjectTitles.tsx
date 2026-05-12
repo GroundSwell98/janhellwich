@@ -25,10 +25,10 @@ export default function ProjectTitles({
             style={{ lineHeight: "1.1" }}
           >
             <span
-              className="text-[clamp(1rem,1.8vw,1.5rem)] uppercase tracking-[-0.01em] transition-all duration-500 ease-out"
+              className="text-[clamp(1.1rem,2vw,1.65rem)] uppercase tracking-[-0.01em] transition-colors duration-500 ease-out"
               style={{
                 color: isActive ? "#111111" : "#C8C8C6",
-                fontWeight: isActive ? 500 : 400,
+                fontWeight: 400,
               }}
             >
               {project.title}

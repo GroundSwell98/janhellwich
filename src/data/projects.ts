@@ -18,11 +18,12 @@ export interface Project {
   media: MediaItem[];
   previewVideo?: string;
   videoSrc?: string;
+  hidden?: boolean;
 }
 
 const R2_BASE = "https://pub-73ab30b45b4b472da6f909e74663f381.r2.dev";
 
-export const projects: Project[] = [
+const allProjects: Project[] = [
   {
     slug: "international-klein-blue",
     title: "INTERNATIONAL KLEIN BLUE",
@@ -99,79 +100,34 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "ball-on-ice",
-    title: "BALL ON ICE",
+    slug: "dua-vogue",
+    title: "CHANEL X VOGUE",
     year: 2025,
+    client: "To be added",
+    description: "To be added",
+    previewVideo: `${R2_BASE}/dua-vogue/preview.mp4`,
+    videoSrc: `${R2_BASE}/dua-vogue/full.mp4`,
     thumbnail: {
-      src: "/media/ball-on-ice/thumb.jpg",
+      src: "/media/dua-vogue/thumb.jpg",
       type: "image",
-      alt: "Ball on Ice",
+      alt: "Chanel x Vogue",
       width: 1920,
       height: 1080,
     },
     media: [
       {
-        src: "/media/ball-on-ice/01.jpg",
+        src: "/media/dua-vogue/thumb.jpg",
         type: "image",
-        alt: "Ball on Ice — still 1",
+        alt: "Chanel x Vogue",
         width: 1920,
-        height: 1280,
-      },
-      {
-        src: "/media/ball-on-ice/02.jpg",
-        type: "image",
-        alt: "Ball on Ice — still 2",
-        width: 1920,
-        height: 1280,
-      },
-      {
-        src: "/media/ball-on-ice/03.jpg",
-        type: "image",
-        alt: "Ball on Ice — still 3",
-        width: 1920,
-        height: 1280,
-      },
-    ],
-  },
-  {
-    slug: "the-altar",
-    title: "THE ALTAR",
-    year: 2024,
-    thumbnail: {
-      src: "/media/the-altar/thumb.jpg",
-      type: "image",
-      alt: "The Altar",
-      width: 1920,
-      height: 1080,
-    },
-    media: [
-      {
-        src: "/media/the-altar/01.jpg",
-        type: "image",
-        alt: "The Altar — still 1",
-        width: 1920,
-        height: 1280,
-      },
-      {
-        src: "/media/the-altar/02.jpg",
-        type: "image",
-        alt: "The Altar — still 2",
-        width: 1920,
-        height: 1280,
-      },
-      {
-        src: "/media/the-altar/03.jpg",
-        type: "image",
-        alt: "The Altar — still 3",
-        width: 1920,
-        height: 1280,
+        height: 1080,
       },
     ],
   },
   {
     slug: "turkish-oil-wrestling",
     title: "TURKISH OIL WRESTLING",
-    year: 2024,
+    year: 2025,
     description:
       "A cinematic exploration of the ancient tradition of Turkish oil wrestling. Gold at the 2025 Young Director Award in Cannes.",
     previewVideo: `${R2_BASE}/turkish-oil-wrestling/preview.mp4`,
@@ -210,7 +166,7 @@ export const projects: Project[] = [
   {
     slug: "le-sage-solange",
     title: 'LE SAGE "SOLANGE"',
-    year: 2023,
+    year: 2024,
     client: "Chanel x Vogue",
     previewVideo: `${R2_BASE}/le-sage-solange/preview.mp4`,
     videoSrc: `${R2_BASE}/le-sage-solange/full.mp4`,
@@ -246,28 +202,77 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "dua-vogue",
-    title: "DUA VOGUE",
+    slug: "ball-on-ice",
+    title: "BALL ON ICE",
     year: 2025,
-    client: "To be added",
-    description: "To be added",
-    previewVideo: `${R2_BASE}/dua-vogue/preview.mp4`,
-    videoSrc: `${R2_BASE}/dua-vogue/full.mp4`,
+    hidden: true,
     thumbnail: {
-      src: "/media/dua-vogue/thumb.jpg",
+      src: "/media/ball-on-ice/thumb.jpg",
       type: "image",
-      alt: "Dua Vogue",
+      alt: "Ball on Ice",
       width: 1920,
       height: 1080,
     },
     media: [
       {
-        src: "/media/dua-vogue/thumb.jpg",
+        src: "/media/ball-on-ice/01.jpg",
         type: "image",
-        alt: "Dua Vogue",
+        alt: "Ball on Ice — still 1",
         width: 1920,
-        height: 1080,
+        height: 1280,
+      },
+      {
+        src: "/media/ball-on-ice/02.jpg",
+        type: "image",
+        alt: "Ball on Ice — still 2",
+        width: 1920,
+        height: 1280,
+      },
+      {
+        src: "/media/ball-on-ice/03.jpg",
+        type: "image",
+        alt: "Ball on Ice — still 3",
+        width: 1920,
+        height: 1280,
+      },
+    ],
+  },
+  {
+    slug: "the-altar",
+    title: "THE ALTAR",
+    year: 2024,
+    hidden: true,
+    thumbnail: {
+      src: "/media/the-altar/thumb.jpg",
+      type: "image",
+      alt: "The Altar",
+      width: 1920,
+      height: 1080,
+    },
+    media: [
+      {
+        src: "/media/the-altar/01.jpg",
+        type: "image",
+        alt: "The Altar — still 1",
+        width: 1920,
+        height: 1280,
+      },
+      {
+        src: "/media/the-altar/02.jpg",
+        type: "image",
+        alt: "The Altar — still 2",
+        width: 1920,
+        height: 1280,
+      },
+      {
+        src: "/media/the-altar/03.jpg",
+        type: "image",
+        alt: "The Altar — still 3",
+        width: 1920,
+        height: 1280,
       },
     ],
   },
 ];
+
+export const projects: Project[] = allProjects.filter((p) => !p.hidden);

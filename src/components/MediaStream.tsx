@@ -71,7 +71,7 @@ export default function MediaStream({ projects, mediaRefs }: MediaStreamProps) {
                 </span>
               </h2>
 
-              <div className="w-[85%] ml-auto">
+              <div className="w-[68%] ml-auto">
                 <MediaItem
                   ref={setMediaRef(`${project.slug}-0`)}
                   item={item}
